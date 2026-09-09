@@ -1,5 +1,4 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@500;600;700&display=swap');
 :root {  
   --bg: #f9f6fd;
   --surface: #ffffff;
@@ -20,8 +19,11 @@
   --success: #15803d;
   --success-soft: #e2f6e8;
   --amber: #c98a2c;
+  --amber-soft: #faf0dc;
+  --line: #b8a9d6;
   --font-display: 'Fraunces', serif;
   --font-body: 'Manrope', sans-serif;
+  --font-hand: 'Caveat', cursive;
 
   --radius-sm: 8px;
   --radius-md: 14px;
@@ -47,6 +49,8 @@ body.dark-mode {
   --profit: #4ade80;
   --success: #4ade80;
   --success-soft: #16321f;
+  --amber-soft: #362a14;
+  --line: #4a3d68;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -182,9 +186,11 @@ h1, h2, h3 {
   display: grid;
   place-items: center;
   text-align: center;
+  position: relative;
+  overflow: visible;
 }
 
-.hero-content { max-width: 640px; }
+.hero-content { max-width: 640px; position: relative; z-index: 2; }
 
 .hero-content h1 {
   font-size: clamp(2.3rem, 5vw, 3.4rem);
@@ -196,6 +202,31 @@ h1, h2, h3 {
   color: var(--primary);
   font-style: italic;
   font-weight: 500;
+  position: relative;
+  display: inline-block;
+}
+
+.hero-content h1 span .squiggle {
+  position: absolute;
+  left: 2%;
+  bottom: -0.32em;
+  width: 96%;
+  height: 14px;
+  overflow: visible;
+}
+
+.hero-content h1 span .squiggle path {
+  fill: none;
+  stroke: var(--pink);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 220;
+  stroke-dashoffset: 220;
+  animation: draw-squiggle 0.9s 0.5s cubic-bezier(.3,.8,.4,1) forwards;
+}
+
+@keyframes draw-squiggle {
+  to { stroke-dashoffset: 0; }
 }
 
 .hero-content p {
@@ -210,6 +241,39 @@ h1, h2, h3 {
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+.hero-coins { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+
+.hero-coin {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: #fdfdfb;
+  box-shadow: inset 0 -4px 0 rgba(0,0,0,0.14), var(--shadow-soft);
+  opacity: 0;
+  animation: coin-drop 0.6s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+
+.hero-coin.c1 { top: 6%;  left: 12%; width: 3.2rem; height: 3.2rem; font-size: 1.3rem; background: linear-gradient(155deg, var(--primary) 0%, var(--primary-dark) 100%); transform: rotate(-12deg); animation-delay: 0.15s; }
+.hero-coin.c2 { top: 62%; left: 6%;  width: 2.1rem; height: 2.1rem; font-size: 0.9rem;  background: linear-gradient(155deg, var(--pink) 0%, #8a1656 100%); transform: rotate(10deg); animation-delay: 0.3s; }
+.hero-coin.c3 { top: 12%; right: 10%; width: 2.5rem; height: 2.5rem; font-size: 1rem; background: linear-gradient(155deg, var(--amber) 0%, #93641c 100%); transform: rotate(16deg); animation-delay: 0.45s; }
+.hero-coin.c4 { top: 68%; right: 14%; width: 3.6rem; height: 3.6rem; font-size: 1.5rem; background: linear-gradient(155deg, var(--primary) 0%, var(--pink) 100%); transform: rotate(-8deg); animation-delay: 0.6s; }
+
+@keyframes coin-drop {
+  from { opacity: 0; transform: translateY(-14px) rotate(var(--rot, 0deg)) scale(0.7); }
+  to   { opacity: 1; transform: translateY(0) rotate(var(--rot, 0deg)) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-coin, .squiggle path { animation: none !important; opacity: 1 !important; stroke-dashoffset: 0 !important; }
+}
+
+@media (max-width: 640px) {
+  .hero-coins { display: none; }
 }
 
 .features {
@@ -227,6 +291,7 @@ h1, h2, h3 {
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   text-align: left;
+  padding-top: 0.6rem;
 }
 
 .feature-card {
@@ -234,18 +299,47 @@ h1, h2, h3 {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 2rem 1.7rem;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.feature-card:nth-child(1) { transform: rotate(-1.6deg); }
+.feature-card:nth-child(2) { transform: rotate(1.1deg); }
+.feature-card:nth-child(3) { transform: rotate(-0.6deg); }
+
+.feature-card:hover {
+  transform: rotate(0deg) translateY(-4px);
+  box-shadow: var(--shadow-lift);
+}
+
+.feature-card::before {
+  content: "";
+  position: absolute;
+  top: -0.6rem;
+  left: 1.8rem;
+  width: 2.6rem;
+  height: 1.1rem;
+  background: var(--primary-soft);
+  opacity: 0.9;
+  transform: rotate(-3deg);
+  box-shadow: var(--shadow-soft);
+}
+.feature-card:nth-child(2)::before { background: var(--pink-soft); left: auto; right: 1.8rem; transform: rotate(3deg); }
+.feature-card:nth-child(3)::before { background: var(--amber-soft); transform: rotate(2deg); }
+
 .feature-icon {
-  font-size: 1.6rem;
-  width: 3rem;
-  height: 3rem;
+  font-size: 1.5rem;
+  width: 3.1rem;
+  height: 3.1rem;
   display: grid;
   place-items: center;
   background: var(--primary-soft);
-  border-radius: var(--radius-sm);
+  border-radius: 63% 37% 54% 46% / 55% 45% 55% 45%;
   margin-bottom: 1.2rem;
 }
+
+.feature-card:nth-child(2) .feature-icon { background: var(--pink-soft); border-radius: 42% 58% 61% 39% / 45% 40% 60% 55%; }
+.feature-card:nth-child(3) .feature-icon { background: var(--amber-soft); border-radius: 55% 45% 40% 60% / 60% 50% 50% 40%; }
 
 .feature-card h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
 .feature-card p { color: var(--ink-soft); font-size: 0.95rem; }
@@ -258,11 +352,38 @@ h1, h2, h3 {
   border-radius: var(--radius-lg);
   padding: 3.5rem 2rem;
   text-align: center;
+  position: relative;
+  overflow: hidden;
 }
 
-.cta h2 { color: #fdfdfb; font-size: 1.9rem; font-weight: 600; }
-.cta p { color: #cfe3da; margin: 0.8rem 0 1.8rem; }
-.cta .btn { background: #fdfdfb; color: var(--primary-dark); }
+.cta::before {
+  content: "₹";
+  position: absolute;
+  top: -1.5rem;
+  left: -1rem;
+  font-family: var(--font-display);
+  font-size: 8rem;
+  font-weight: 600;
+  color: #fdfdfb;
+  opacity: 0.06;
+  transform: rotate(-18deg);
+}
+.cta::after {
+  content: "₹";
+  position: absolute;
+  bottom: -2.5rem;
+  right: -1rem;
+  font-family: var(--font-display);
+  font-size: 9rem;
+  font-weight: 600;
+  color: #fdfdfb;
+  opacity: 0.06;
+  transform: rotate(14deg);
+}
+
+.cta h2 { color: #fdfdfb; font-size: 1.9rem; font-weight: 600; position: relative; }
+.cta p { color: #cfe3da; margin: 0.8rem 0 1.8rem; position: relative; }
+.cta .btn { background: #fdfdfb; color: var(--primary-dark); position: relative; }
 .cta .btn:hover { background: #eef3ef; }
 
 
@@ -280,9 +401,32 @@ footer {
   display: grid;
   place-items: center;
   padding: 2rem 1.2rem;
+  position: relative;
+  overflow: hidden;
   background:
     radial-gradient(circle at 15% 20%, var(--primary-soft) 0%, transparent 45%),
+    radial-gradient(circle at 88% 78%, var(--pink-soft) 0%, transparent 40%),
+    radial-gradient(var(--line) 1px, transparent 1px),
     var(--bg);
+  background-size: auto, auto, 26px 26px, auto;
+  background-position: 0 0, 0 0, 0 0, 0 0;
+}
+
+.auth-page::before,
+.auth-page::after {
+  content: "₹";
+  position: absolute;
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--primary);
+  opacity: 0.08;
+  pointer-events: none;
+}
+.auth-page::before { top: 8%; left: 8%; font-size: 5rem; transform: rotate(-16deg); }
+.auth-page::after { bottom: 6%; right: 8%; font-size: 6.5rem; color: var(--pink); transform: rotate(12deg); }
+
+@media (max-width: 640px) {
+  .auth-page::before, .auth-page::after { display: none; }
 }
 
 .auth-container {
@@ -291,18 +435,41 @@ footer {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 2.6rem 2.2rem;
+  padding: 2.6rem 2.2rem 2.4rem;
   box-shadow: var(--shadow-lift);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-container::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--primary) 0 10px,
+    var(--pink) 10px 20px
+  );
 }
 
 .auth-logo {
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.3rem;
-  margin-bottom: 1.6rem;
+  margin-bottom: 0.3rem;
   display: flex;
   align-items: center;
   gap: 0.6rem;
+}
+
+.auth-tag {
+  display: inline-block;
+  font-family: var(--font-hand);
+  font-size: 1.05rem;
+  color: var(--pink);
+  transform: rotate(-3deg);
+  margin: 0 0 1.3rem 0.1rem;
 }
 
 .auth-container h1 { font-size: 1.6rem; font-weight: 600; }
@@ -387,6 +554,15 @@ footer {
 .app-topbar {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.app-topbar::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: repeating-linear-gradient(-45deg, var(--primary) 0 8px, var(--pink) 8px 16px);
+  opacity: 0.7;
 }
 
 .app-topbar-inner {
@@ -504,6 +680,21 @@ footer {
 }
 .summary-card.balance .value { font-size: 2.5rem; color: #baf7d2; }
 .summary-card.balance .label { color: #e4d9fb; }
+
+.summary-card.balance::after {
+  content: "₹";
+  position: absolute;
+  right: -0.4rem;
+  bottom: -1.6rem;
+  font-family: var(--font-display);
+  font-size: 7.5rem;
+  font-weight: 600;
+  color: #fdfdfb;
+  opacity: 0.07;
+  transform: rotate(-14deg);
+  line-height: 1;
+  pointer-events: none;
+}
 
 .summary-card.income {
   background: var(--surface);
@@ -638,6 +829,16 @@ footer {
   color: var(--ink-soft);
 }
 .empty-state .emoji { font-size: 2.4rem; margin-bottom: 0.8rem; }
+.empty-state svg {
+  width: 108px;
+  height: 108px;
+  margin: 0 auto 0.8rem;
+  display: block;
+}
+.empty-state .illus-line { stroke: var(--line); }
+.empty-state .illus-primary { stroke: var(--primary); }
+.empty-state .illus-primary-fill { fill: var(--primary-soft); }
+.empty-state .illus-pink { stroke: var(--pink); }
 .empty-state h3 { font-size: 1.1rem; color: var(--ink); margin-bottom: 0.4rem; }
 .empty-state p { font-size: 0.9rem; max-width: 32ch; margin: 0 auto; }
 
@@ -686,6 +887,8 @@ footer {
   transition: filter 0.15s ease, transform 0.15s ease;
 }
 .fab-add:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.fab-add:hover span.coin { transform: rotate(180deg); }
+.fab-add span.coin { display: inline-block; transition: transform 0.4s ease; }
 
 
 .overlay {

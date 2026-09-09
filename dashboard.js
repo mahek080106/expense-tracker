@@ -1,4 +1,3 @@
-
 const CATEGORIES = {
   income: ["Salary", "Freelance", "Gift", "Other Income"],
   expense: ["Food", "Travel", "Shopping", "Bills", "Entertainment", "Health", "Other"]
@@ -142,6 +141,30 @@ function getFilteredSortedTransactions() {
   return list;
 }
 
+const EMPTY_JAR_SVG = `
+  <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path class="illus-primary-fill illus-line" stroke-width="2.5" stroke-linejoin="round"
+      d="M32 38 L30 84 C30 89 38 92 50 92 C62 92 70 89 70 84 L68 38 Z"/>
+    <path class="illus-line" stroke-width="2.5" stroke-linecap="round"
+      d="M28 38 H72"/>
+    <path class="illus-line" stroke-width="2.5" stroke-linecap="round"
+      d="M40 38 V28 C40 24 44 22 50 22 C56 22 60 24 60 28 V38"/>
+    <path class="illus-primary" stroke-width="2.5" stroke-linecap="round"
+      d="M50 58 V78 M50 58 C44 58 40 54 40 50 M50 66 C56 66 60 63 60 59"/>
+    <circle class="illus-pink" stroke-width="2.5" cx="50" cy="14" r="7"/>
+    <path class="illus-pink" stroke-width="2" d="M47 14 H53 M50 11 V17"/>
+  </svg>`;
+
+const EMPTY_SEARCH_SVG = `
+  <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect class="illus-primary-fill illus-line" stroke-width="2.5" x="24" y="14" width="40" height="52" rx="4"/>
+    <path class="illus-line" stroke-width="2" stroke-linecap="round"
+      d="M32 26 H56 M32 34 H56 M32 42 H48"/>
+    <path class="illus-line" stroke-width="2" stroke-dasharray="1 5" stroke-linecap="round" d="M24 58 H64"/>
+    <circle class="illus-pink" stroke-width="3" cx="62" cy="62" r="14"/>
+    <path class="illus-pink" stroke-width="3" stroke-linecap="round" d="M72 72 L82 82"/>
+  </svg>`;
+
 function renderTransactionList() {
   const list = getFilteredSortedTransactions();
   transactionList.innerHTML = "";
@@ -150,7 +173,7 @@ function renderTransactionList() {
     const isEmptyOverall = transactions.length === 0;
     transactionList.innerHTML = `
       <div class="empty-state">
-        <div class="emoji">${isEmptyOverall ? "🌱" : "🔍"}</div>
+        ${isEmptyOverall ? EMPTY_JAR_SVG : EMPTY_SEARCH_SVG}
         <h3>${isEmptyOverall ? "No transactions yet" : "No matching transactions"}</h3>
         <p>${isEmptyOverall
           ? "Add your first income or expense to see your dashboard come to life."
